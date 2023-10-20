@@ -14,7 +14,6 @@
         "email": "elielavelar@gmail.com",
         "issues": "https://github.com/elielavelar/yii2-oci8pdo/issues"
     },
-    "minimum-stability": "stable",
     "require": {
         "php": ">=8.0",
         "yiisoft/yii2": "~2.0.48",
