@@ -10,7 +10,7 @@
      * @license    http://open.benramsey.com/license/mit  MIT License
      */
 
-    namespace sfedosimov\oci8pdo;
+    namespace elielavelar\oci8pdo;
 
     use PDO;
     use PDOException;
@@ -144,7 +144,7 @@
          *
          * @return void
          */
-        public function beginTransaction()
+        public function beginTransaction() :bool
         {
             if ($this->isTransaction()) {
                 throw new PDOException('There is already an active transaction');

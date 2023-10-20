@@ -10,7 +10,7 @@
      * @license    http://open.benramsey.com/license/mit  MIT License
      */
 
-    namespace sfedosimov\oci8pdo;
+    namespace elielavelar\oci8pdo;
 
     use Yii;
     use yii\db\Connection;
@@ -19,7 +19,7 @@
     class Oci8PDO_Connection extends Connection
     {
 
-        public $pdoClass = 'sfedosimov\oci8pdo\Oci8PDO';
+        public $pdoClass = 'elielavelar\oci8pdo\Oci8PDO';
 
         /**
          * Creates the PDO instance.
@@ -30,12 +30,12 @@
         protected function createPdoInstance()
         {
             if (!empty($this->charset)) {
-                Yii::trace('Error: Oci8PDO_Connection::$charset has been set to `' . $this->charset . '` in your config. The property is only used for MySQL and PostgreSQL databases. If you want to set the charset in Oracle to UTF8, add the following to the end of your Oci8PDO_Connection::$dsn: ;charset=AL32UTF8;',
-                    'vendor\sfedosimov\yii2-oci8pdo\Oci8PDO_Connection');
+                Yii::debug('Error: Oci8PDO_Connection::$charset has been set to `' . $this->charset . '` in your config. The property is only used for MySQL and PostgreSQL databases. If you want to set the charset in Oracle to UTF8, add the following to the end of your Oci8PDO_Connection::$dsn: ;charset=AL32UTF8;',
+                    'vendor\elielavelar\yii2-oci8pdo\Oci8PDO_Connection');
             }
 
             try {
-                Yii::trace('Opening Oracle connection', 'vendor\sfedosimov\yii2-oci8pdo\Oci8PDO_Connection');
+                Yii::debug('Opening Oracle connection', 'vendor\elielavelar\yii2-oci8pdo\Oci8PDO_Connection');
                 $pdoClass = parent::createPdoInstance();
             } catch(PDOException $e) {
                 throw $e;
@@ -49,7 +49,7 @@
          */
         public function close()
         {
-            Yii::trace('Closing Oracle connection', 'vendor\sfedosimov\yii2-oci8pdo\Oci8PDO_Connection');
+            Yii::debug('Closing Oracle connection', 'vendor\elielavelar\yii2-oci8pdo\Oci8PDO_Connection');
             parent::close();
         }
 

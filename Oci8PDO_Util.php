@@ -10,7 +10,7 @@
      * @license    http://open.benramsey.com/license/mit  MIT License
      */
 
-    namespace sfedosimov\oci8pdo;
+    namespace elielavelar\oci8pdo;
 
     /**
      * A static utility class for PDO userspace classes

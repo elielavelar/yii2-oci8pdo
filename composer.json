@@ -6,20 +6,54 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Sergey Fedosimov",
-            "email": "sfedosimov@gmail.com"
+            "name": "Eliel Avelar",
+            "email": "elielavelar@gmail.com"
         }
     ],
     "support": {
-        "email": "sfedosimov@gmail.com",
-        "issues": "https://github.com/sfedosimov/yii2-oci8pdo/issues"
+        "email": "elielavelar@gmail.com",
+        "issues": "https://github.com/elielavelar/yii2-oci8pdo/issues"
     },
+    "minimum-stability": "stable",
     "require": {
-        "yiisoft/yii2": "*"
+        "php": ">=8.0",
+        "yiisoft/yii2": "~2.0.48",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.1",
+        "yiisoft/yii2-gii": "~2.2",
+        "yiisoft/yii2-faker": "~2.0",
+        "phpunit/phpunit": "~9.5",
+        "codeception/codeception": "^5.0.0 || ^4.0",
+        "codeception/lib-innerbrowser": "^3.0 || ^1.1",
+        "codeception/module-asserts": "^3.0 || ^1.1",
+        "codeception/module-yii2": "^1.1",
+        "codeception/module-filesystem": "^3.0.0",
+        "codeception/verify": "^2.2",
+        "symfony/browser-kit": "^6.0 || >=2.7 <=4.2.4"
     },
     "autoload": {
         "psr-4": {
-            "sfedosimov\\oci8pdo\\": ""
+            "elielavelar\\oci8pdo\\": ""
         }
-    }
+    },
+    "config": {
+        "process-timeout": 1800,
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "vendor/npm",
+                "bower-asset-library": "vendor/bower-asset"
+            }
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
