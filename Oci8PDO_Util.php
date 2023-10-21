@@ -29,7 +29,7 @@
          * @return array
          * @link http://www.php.net/manual/en/pdo.construct.php
          */
-        public static function parseDsn($dsn, array $params)
+        public static function parseDsn($dsn, array $params): array
         {
             if (strpos($dsn, ':') !== false) {
                 $driver = substr($dsn, 0, strpos($dsn, ':'));
@@ -68,7 +68,7 @@
          *
          * @return string
          */
-        public static function iniGet($varname)
+        public static function iniGet($varname): string
         {
             return ini_get($varname);
         }

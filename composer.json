@@ -1,5 +1,5 @@
 {
-    "name": "sfedosimov/yii2-oci8pdo",
+    "name": "elielavelar/yii2-oci8pdo",
     "description": "Emulation of the PDO driver by means of OCI8",
     "type": "yii2-extension",
     "keywords": ["yii2","oci8","pdo"],

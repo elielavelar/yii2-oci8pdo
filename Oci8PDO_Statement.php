@@ -88,7 +88,7 @@
          *
          * @return bool
          */
-        public function execute($inputParams = null)
+        public function execute($inputParams = null): bool
         {
             $mode = OCI_COMMIT_ON_SUCCESS;
             if ($this->_pdoOci8->isTransaction()) {
@@ -132,7 +132,8 @@
             $fetch_style = PDO::FETCH_BOTH,
             $cursor_orientation = PDO::FETCH_ORI_NEXT,
             $cursor_offset = 0
-        ) {
+        ): mixed
+        {
             if ($cursor_orientation !== PDO::FETCH_ORI_NEXT || $cursor_offset !== 0) {
                 throw new PDOException('$cursor_orientation that is not PDO::FETCH_ORI_NEXT is not implemented for Oci8PDO_Statement::fetch()');
             }
@@ -182,7 +183,8 @@
             $data_type = PDO::PARAM_STR,
             $length = -1,
             $driver_options = null
-        ) {
+        ): bool
+        {
             if ($driver_options !== null) {
                 throw new PDOException('$driver_options is not implemented for Oci8PDO_Statement::bindParam()');
             }
@@ -236,7 +238,7 @@
          * @param null     $maxlen
          * @param null     $driverdata
          *
-         * @return bool|void
+         * @return bool|null
          * @todo Implement this functionality by creating a table map of the
          *       variables passed in here, and, when iterating over the values
          *       of the query or fetching rows, assign data from each column
@@ -248,7 +250,8 @@
             $type = PDO::PARAM_STR,
             $maxlen = null,
             $driverdata = null
-        ) {
+        )  : bool
+        {
             if ($maxlen !== null || $driverdata !== null) {
                 throw new PDOException('$maxlen and $driverdata parameters are not implemented for Oci8PDO_Statement::bindColumn()');
             }
@@ -263,7 +266,7 @@
             );
         }
 
-        protected function bindToColumn($result)
+        protected function bindToColumn($result): void
         {
             if ($result !== false) {
                 foreach ($this->_boundColumns as $bound) {
@@ -291,7 +294,8 @@
             $parameter,
             $variable,
             $dataType = PDO::PARAM_STR
-        ) {
+        ): bool
+        {
             return $this->bindParam($parameter, $variable, $dataType);
         }
 
@@ -300,7 +304,7 @@
          *
          * @return int
          */
-        public function rowCount()
+        public function rowCount(): int
         {
             return oci_num_rows($this->_sth);
         }
@@ -312,7 +316,7 @@
          *
          * @return string
          */
-        public function fetchColumn($colNumber = 0)
+        public function fetchColumn($colNumber = 0): bool|string
         {
             $result = oci_fetch_array($this->_sth, OCI_NUM);
 
@@ -328,20 +332,14 @@
         /**
          * Returns an array containing all of the result set rows
          *
-         * @param int   $fetch_style
-         * @param mixed $fetch_argument
-         * @param array $ctor_args
-         *
+         * @param int $mode
+         * @param mixed ...$args
          * @return mixed
          */
         public function fetchAll(
-            $fetch_style = PDO::FETCH_BOTH,
-            $fetch_argument = null,
-            $ctor_args = null
-        ) {
-            if ($this->_fetchMode !== null) {
-                $fetch_style = $this->_fetchMode;
-            }
+            int $mode = PDO::FETCH_DEFAULT, mixed ...$args
+        ) :array {
+            $fetch_style = $this->_fetchMode ?? $mode;
 
             if ($fetch_style === PDO::FETCH_ASSOC) {
                 oci_fetch_all($this->_sth, $result, 0, -1, OCI_FETCHSTATEMENT_BY_ROW + OCI_ASSOC);
@@ -378,17 +376,16 @@
         /**
          * Fetches the next row and returns it as an object
          *
-         * @param string $className
-         * @param array  $ctor_args
-         *
-         * @return mixed
+         * @param string|null $class
+         * @param array $constructorArgs
+         * @return object|false
          */
-        public function fetchObject($className = 'stdClass', $ctor_args = null)
+        public function fetchObject(?string $class = "stdClass", array $constructorArgs = []): object|false
         {
-            if ($className == 'stdClass') {
+            if ($class == 'stdClass') {
                 $result = oci_fetch_object($this->_sth);
             } else {
-                $object = new $className($ctor_args);
+                $object = new $class($constructorArgs);
                 $object_oci = oci_fetch_object($this->_sth);
                 foreach ($object_oci as $k => $v) {
                     $object->$k = $v;
@@ -409,7 +406,7 @@
          *
          * @return string
          */
-        public function errorCode()
+        public function errorCode(): string
         {
             $error = $this->errorInfo();
             return $error[0];
@@ -420,7 +417,7 @@
          *
          * @return array
          */
-        public function errorInfo()
+        public function errorInfo(): array
         {
             $e = oci_error($this->_sth);
 
@@ -443,7 +440,7 @@
          *
          * @return bool
          */
-        public function setAttribute($attribute, $value)
+        public function setAttribute($attribute, $value): bool
         {
             $this->_options[$attribute] = $value;
             return true;
@@ -456,7 +453,7 @@
          *
          * @return mixed|null
          */
-        public function getAttribute($attribute)
+        public function getAttribute($attribute): mixed
         {
             if (isset($this->_options[$attribute])) {
                 return $this->_options[$attribute];
@@ -469,7 +466,7 @@
          *
          * @return int
          */
-        public function columnCount()
+        public function columnCount(): int
         {
             return oci_num_fields($this->_sth);
         }
@@ -492,9 +489,9 @@
          *
          * @param int $column Zero-based column index
          *
-         * @return array
+         * @return array|false
          */
-        public function getColumnMeta($column)
+        public function getColumnMeta($column) :array|false
         {
             // Columns in oci8 are 1-based; add 1 if it's a number
             if (is_numeric($column)) {
@@ -524,13 +521,10 @@
          * @internal param int $fetchType
          * @return bool
          */
-        public function setFetchMode(
-            $mode,
-            $colClassOrObj = null,
-            array $ctorArgs = array()
-        ) {
+        public function setFetchMode($mode, $className = null, ...$params): bool
+        {
             //52: $this->_statement->setFetchMode(PDO::FETCH_ASSOC);
-            if ($colClassOrObj !== null || !empty($ctorArgs)) {
+            if ($className !== null || !empty($args)) {
                 throw new PDOException('Second and third parameters are not implemented for Oci8PDO_Statement::setFetchMode()');
                 //see http://www.php.net/manual/en/pdostatement.setfetchmode.php
             }
@@ -543,7 +537,7 @@
          *
          * @return bool
          */
-        public function nextRowset()
+        public function nextRowset(): bool
         {
             throw new PDOException('nextRowset() method is not implemented for Oci8PDO_Statement');
         }
@@ -553,7 +547,7 @@
          *
          * @return bool
          */
-        public function closeCursor()
+        public function closeCursor(): bool
         {
             //Because we use OCI8 functions, we don't need this.
             return oci_free_statement($this->_sth);
@@ -564,7 +558,7 @@
          *
          * @return bool
          */
-        public function debugDumpParams()
+        public function debugDumpParams(): bool
         {
             throw new PDOException('debugDumpParams() method is not implemented for Oci8PDO_Statement');
         }
@@ -574,7 +568,7 @@
          *
          * @return array
          */
-        public function current()
+        public function current(): array
         {
             throw new PDOException('current() method is not implemented for Oci8PDO_Statement');
         }
@@ -584,7 +578,7 @@
          *
          * @return mixed
          */
-        public function key()
+        public function key(): mixed
         {
             throw new PDOException('key() method is not implemented for Oci8PDO_Statement');
         }
@@ -594,7 +588,7 @@
          *
          * @return void
          */
-        public function next()
+        public function next(): void
         {
             throw new PDOException('next() method is not implemented for Oci8PDO_Statement');
         }
@@ -604,7 +598,7 @@
          *
          * @return void
          */
-        public function rewind()
+        public function rewind(): void
         {
             throw new PDOException('rewind() method is not implemented for Oci8PDO_Statement');
         }
@@ -614,7 +608,7 @@
          *
          * @return bool
          */
-        public function valid()
+        public function valid(): bool
         {
             throw new PDOException('valid() method is not implemented for Oci8PDO_Statement');
         }

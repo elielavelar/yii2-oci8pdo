@@ -19,7 +19,7 @@
     class Oci8PDO_Connection extends Connection
     {
 
-        public $pdoClass = 'elielavelar\oci8pdo\Oci8PDO';
+        public $pdoClass = Oci8PDO::class;
 
         /**
          * Creates the PDO instance.
@@ -31,11 +31,11 @@
         {
             if (!empty($this->charset)) {
                 Yii::debug('Error: Oci8PDO_Connection::$charset has been set to `' . $this->charset . '` in your config. The property is only used for MySQL and PostgreSQL databases. If you want to set the charset in Oracle to UTF8, add the following to the end of your Oci8PDO_Connection::$dsn: ;charset=AL32UTF8;',
-                    'vendor\elielavelar\yii2-oci8pdo\Oci8PDO_Connection');
+                    Oci8PDO_Connection::class);
             }
 
             try {
-                Yii::debug('Opening Oracle connection', 'vendor\elielavelar\yii2-oci8pdo\Oci8PDO_Connection');
+                Yii::debug('Opening Oracle connection', Oci8PDO_Connection::class);
                 $pdoClass = parent::createPdoInstance();
             } catch(PDOException $e) {
                 throw $e;

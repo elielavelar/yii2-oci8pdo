@@ -67,8 +67,8 @@
          * @param null   $password
          * @param array  $options
          *
-         * @internal param string $passwd
-         * @return Oci8PDO
+         * @return void
+         *@internal param string $passwd
          */
         public function __construct(
             $dsn,
@@ -123,7 +123,7 @@
          *
          * @return Oci8PDO_Statement
          */
-        public function prepare($statement, $options = null)
+        public function prepare($statement, $options = null): Oci8PDO_Statement
         {
             $sth = @oci_parse($this->_dbh, $statement);
 
@@ -160,7 +160,7 @@
          *
          * @return bool
          */
-        public function isTransaction()
+        public function isTransaction(): bool
         {
             return $this->_isTransaction;
         }
@@ -170,7 +170,7 @@
          *
          * @return bool
          */
-        public function commit()
+        public function commit(): bool
         {
             if (!$this->isTransaction()) {
                 throw new PDOException('There is no active transaction');
@@ -189,7 +189,7 @@
          *
          * @return bool
          */
-        public function rollBack()
+        public function rollBack(): bool
         {
             if (!$this->isTransaction()) {
                 throw new PDOException('There is no active transaction');
@@ -211,7 +211,7 @@
          *
          * @return bool
          */
-        public function setAttribute($attribute, $value)
+        public function setAttribute($attribute, $value): bool
         {
             //433: $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             //435: $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,$this->emulatePrepare);
@@ -230,7 +230,7 @@
          *
          * @return int The number of rows affected
          */
-        public function exec($query)
+        public function exec($query): int
         {
             $stmt = $this->prepare($query);
             $stmt->execute();
@@ -251,10 +251,10 @@
          */
         public function query(
             $query,
-            $fetchType = null,
-            $typeArg = null,
-            array $ctorArgs = array()
-        ) {
+            $fetchMode = null,
+            ... $fetch_mode_args
+        ): Oci8PDO_Statement
+        {
             $stmt = $this->prepare($query);
             $stmt->execute();
 
@@ -272,9 +272,9 @@
          *
          * @return void
          */
-        public function lastInsertId($name = null)
+        public function lastInsertId($name = null): string|false
         {
-            trigger_error(
+            return trigger_error(
                 'SQLSTATE[IM001]: Driver does not support this function: driver does not support lastInsertId()',
                 E_USER_WARNING);
         }
@@ -289,7 +289,7 @@
          *
          * @return string
          */
-        public function errorCode()
+        public function errorCode(): string
         {
             $error = $this->errorInfo();
             return $error[0];
@@ -300,7 +300,7 @@
          *
          * @return array
          */
-        public function errorInfo()
+        public function errorInfo(): array
         {
             $e = oci_error($this->_dbh);
 
@@ -322,7 +322,7 @@
          *
          * @return mixed|null
          */
-        public function getAttribute($attribute)
+        public function getAttribute($attribute): mixed
         {
             //438: $driver=strtolower($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
             //602: return $this->getAttribute(PDO::ATTR_CASE);
@@ -350,7 +350,7 @@
          * @return string
          * @todo Implement support for $parameter_type.
          */
-        public function quote($string, $parameter_type = PDO::PARAM_STR)
+        public function quote($string, $parameter_type = PDO::PARAM_STR): string
         {
             if ($parameter_type !== PDO::PARAM_STR) {
                 throw new PDOException('Only PDO::PARAM_STR is currently implemented for the $parameter_type of Oci8PDO::quote()');
